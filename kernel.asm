@@ -6,15 +6,6 @@ data:
     palavra1 db 'batata',0
     palavra2 db 'ceu',0
 
-
-start:
-    xor ax, ax
-    mov ds, ax
-    mov es, ax
-    
-    ;limpando a tela, em bl fica o valor da cor que vai ser utilizada na tela, 1 é o valor azul, outras cores disponíveis no tutorial
-    
-    mov bl, 1 
     call clear
 
     endl:       ;Pula uma linha, printando na tela o caractere que representa o /n
@@ -59,6 +50,16 @@ start:
         jmp .loop       ; volta para o inicio do loop
     .endloop:
     ret
+
+start:
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    
+    ;limpando a tela, em bl fica o valor da cor que vai ser utilizada na tela, 1 é o valor azul, outras cores disponíveis no tutorial
+    
+    mov bl, 1 
+    
 
     ;Imprimindo na tela a mensagem declarada em data
     mov si, mensagem    ;si aponta para o começo do endereço onde está mensagem
