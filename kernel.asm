@@ -5,7 +5,6 @@ data:
     mensagem db 'Digite uma palavra', 0
     palavra db 'batata', 0
     X times 10 db 0
-    ;flag_erro db 0
 
     putchar:    ;Printa um caractere na tela, pega o valor salvo em al
         mov ah, 0x0e
@@ -31,23 +30,6 @@ data:
         call putchar
         mov al, 0x0d          ; carriage return
         call putchar
-    ret
-
-    reverse:              ; mov si, string , pega a string apontada por si e a reverte 
-        mov di, si
-        xor cx, cx          ; zerar contador
-        .loop1:             ; botar string na stack
-            lodsb
-            cmp al, 0
-            je .endloop1
-                inc cl
-                push ax
-            jmp .loop1
-        .endloop1:
-        .loop2:             ; remover string da stack        
-            pop ax
-            stosb
-            loop .loop2
     ret
 
     gets:                 ; mov di, string, salva na string apontada por di, cada caractere lido na linha   
@@ -80,53 +62,68 @@ data:
             call endl
     ret
 
-    strcmp:              ; mov si, string1, mov di, string2, compara as strings apontadas por si e di
+    cmpzinho:
+        lodsb
+        cmp al, byte[di]
+        jne .notequal
+        cmp al, byte[di]
+        je .equal
+        inc di
+        .notequal:
+            clc
+            ret
+        .equal:
+            stc
+    ret
+
+
+
+    print_string_color:
+        .loop:
+            lodsb           ; bota character apontado por si em al 
+            cmp al, 0       ; 0 é o valor atribuido ao final de uma string
+            je .endloop     ; Se for o final da string, acaba o loop
+            call cmpzinho   ; compara caractere
+            je .certo
+            mov ah, 09h
+            mov bl, 4
+            int 10h
+            jmp .loop
+            .certo:
+                mov ah, 09h
+                mov bl, 2
+                int 10h
+            jmp .loop       ; volta para o inicio do loop
+        .endloop:
+    ret
+
+    strcmp:
         .loop1:
             lodsb
             cmp al, byte[di]
-            jne .notequal
-            cmp al, 0
             je .equal
+            jne .notequal
+            cmp al, 0   ; 0 é o valor atribuido ao final de uma string
+            je .finish
             inc di
-        jmp .loop1
+            jmp .loop1
         .notequal:
-            clc
+            mov ah, 09h
             mov bl, 4
-            call putchar
-            ;;flag
+            int 10h
+            clc
         ret
         .equal:
-            stc
+            mov ah, 09h
             mov bl, 2
-            call putchar
+            int 10h
         ret
-
-    tostring:              ; mov ax, int / mov di, string, transforma o valor em ax em uma string e salva no endereço apontado por di   
-        push di
-        .loop1:
-            cmp ax, 0
-            je .endloop1
-            xor dx, dx
-            mov bx, 10
-            div bx            ; ax = 9999 -> ax = 999, dx = 9
-            xchg ax, dx       ; swap ax, dx
-            add ax, 48        ; 9 + '0' = '9'
-            stosb
-            xchg ax, dx
-            jmp .loop1
-        .endloop1:
-            pop si
-            cmp si, di
-            jne .done
-            mov al, 48
-            stosb
-        .done:
-            mov al, 0
-            stosb
-            call reverse
+        .finish:
+            call endl
+            stc
     ret
 
-    prints:             ; mov si, string
+    prints:
         .loop:
             lodsb           ; bota character apontado por si em al 
             cmp al, 0       ; 0 é o valor atribuido ao final de uma string
@@ -136,7 +133,7 @@ data:
         .endloop:
     ret
 
-    clear:                   ; mov bl, color
+    clear:
         ; set the cursor to top left-most corner of screen
         mov dx, 0 
         mov bh, 0      
@@ -158,38 +155,28 @@ data:
     ret
 
 start:
-    
     xor ax, ax    ;limpando ax
     mov ds, ax    ;limpando ds
     mov es, ax    ;limpando es
-
-    ;limpando a tela, em bl fica o valor da cor que vai ser utilizada na tela, 15 é o valor branco, outras cores disponíveis no tutorial
-    
-    mov bl, 15 
-    call clear
 
     ;Imprimindo na tela a mensagem declarada em data
     mov si, mensagem    ;si aponta para o começo do endereço onde está mensagem
     call prints         ;Como só é impresso um caractere por vez, pegamos uma string com N caracteres e printamos um por um em ordem até chegar ao caractere de valor 0 que é o fim da string, assim prints pega a string para qual o ponteiro si aponta e a imprime na tela até o seu final
     call endl           ;Pula uma linha, assim o próximo caractere imprimido estará na linha de baixo
 
-    ;.loop3
-        ;lendo o valor de X
-        mov di, X           ;di aponta para o começo do endereço onde está X
-        call gets           ;gets salva no endereço apontado por di cada caractere lido do teclado até o enter
-        call endl
+.leitura:
+    ;Lendo o valor de X
+    mov di, X           ;di aponta para o começo do endereço onde está X
+    call gets           ;gets salva no endereço apontado por di cada caractere lido do teclado até o enter
+    call endl
 
-        mov si, X
-        mov di, palavra
-        call strcmp
-        call endl
-        
-        mov si, X
-        call prints
-        call endl
+    mov si, X
+    mov di, palavra
+    call print_string_color
+    je done             ;se for igual, ganhou (não entrou no notequal)
 
-    
-    ;jmp loop3
+    call endl
+    jmp .leitura        ;se não for igual, tenta dnv
 
 done:
     jmp $
