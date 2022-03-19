@@ -34,18 +34,6 @@ endl:
   call putchar
   ret
 
-;  var al, *si;
-;  lodsb(){
-;    al = *si;
-;    si++;
-;  }
-
-;    var al, *di;
-;    stosb(){
-;        *di = al;
-;        di++;
-;    }
-
 prints:             ; mov si, string
   .loop:
     lodsb           ; bota character em al 
