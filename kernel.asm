@@ -3,13 +3,21 @@ jmp 0x0000:start
 
 data:
   mensagem db 'Digite uma palavra de 6 letras: ', 0
-  palavra db 'batata', 0
+  mensagem_numero db 'Escolha um numero de 1 a 5: ', 0
   letras_certas db '______', 0
   sucesso db 'Parabens!! Voce conseguiu :)', 0
-  falha db 'Ops, nao foi dessa vez :/', 0
-  acertos db 'Letras certas: ', 0
-  debbug db 'deu ruim fi', 0
+  falha db 'Ops, nao foi dessa vez! :/', 0
+  acertos db 'Progresso: ', 0
+
+  palavra1 db 'batata', 0
+  palavra2 db 'jujuba', 0
+  palavra3 db 'rodada', 0
+  palavra4 db 'rodape', 0
+  palavra5 db 'amigos', 0
+
+  palavra times 8 db 0
   X times 8 db 0
+  numero times 3 db 0
 
 putchar:
   mov ah, 0x0e
@@ -120,6 +128,19 @@ start:
     xor ax, ax    ;limpando ax
     mov ds, ax    ;limpando ds
     mov es, ax    ;limpando es
+
+  .escolha_numero:
+      mov si, mensagem_numero
+      call prints
+
+      mov di, numero
+      call gets
+      call endl
+      cmp byte[numero], '5'
+      jg .escolha_numero ; se for maior que 4
+      cmp byte[numero], '1'
+      jl .escolha_numero ; se for menor que 0
+    
 
 .leitura:
     ;Imprimindo na tela a mensagem declarada em data
