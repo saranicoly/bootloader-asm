@@ -161,16 +161,15 @@ start:
     call gets           ;gets salva no endereço apontado por di cada caractere lido do teclado até o enter
     call endl
 
-    mov si, X
-
-    mov di, palavra1
+    mov si, X ;si salva o valor do palpite, que depois sera comparado com a palavra
+    mov di, palavra1 ; di recebe o gabarito para comparacao
     call strcmp
     je .sucesso
     mov si, falha
     call prints
     call endl
 
-    mov si, X
+    mov si, X ;checa quais letras estao certas ou erradas
     mov di, palavra1
     call charcmp
     mov si, acertos
