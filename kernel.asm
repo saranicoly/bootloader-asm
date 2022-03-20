@@ -15,9 +15,8 @@ data:
   palavra4 db 'rodape', 0
   palavra5 db 'amigos', 0
 
-  palavra times 8 db 0
   X times 8 db 0
-  numero times 3 db 0
+  numero times 5 db 0
 
 putchar:
   mov ah, 0x0e
@@ -137,12 +136,22 @@ start:
       call gets
       call endl
       cmp byte[numero], '5'
-      jg .escolha_numero ; se for maior que 4
+      jg .escolha_numero ; se for maior que 5
       cmp byte[numero], '1'
-      jl .escolha_numero ; se for menor que 0
-    
+      jl .escolha_numero ; se for menor que 1
 
-.leitura:
+      cmp byte[numero], '1'
+      je .p1
+      cmp byte[numero], '2'
+      je .p2
+      cmp byte[numero], '3'
+      je .p3
+      cmp byte[numero], '4'
+      je .p4
+      cmp byte[numero], '5'
+      je .p5
+
+ .p1:
     ;Imprimindo na tela a mensagem declarada em data
     mov si, mensagem    ;si aponta para o começo do endereço onde está mensagem
     call prints         ;Como só é impresso um caractere por vez, pegamos uma string com N caracteres e printamos um por um em ordem até chegar ao caractere de valor 0 que é o fim da string, assim prints pega a string para qual o ponteiro si aponta e a imprime na tela até o seu final
@@ -153,7 +162,8 @@ start:
     call endl
 
     mov si, X
-    mov di, palavra
+
+    mov di, palavra1
     call strcmp
     je .sucesso
     mov si, falha
@@ -161,7 +171,7 @@ start:
     call endl
 
     mov si, X
-    mov di, palavra
+    mov di, palavra1
     call charcmp
     mov si, acertos
     call prints
@@ -171,12 +181,149 @@ start:
     call endl
     call endl
 
-    jmp .leitura
+    jmp .p1
+
+    jmp done
+     
+ .p2:
+    ;Imprimindo na tela a mensagem declarada em data
+    mov si, mensagem    ;si aponta para o começo do endereço onde está mensagem
+    call prints         ;Como só é impresso um caractere por vez, pegamos uma string com N caracteres e printamos um por um em ordem até chegar ao caractere de valor 0 que é o fim da string, assim prints pega a string para qual o ponteiro si aponta e a imprime na tela até o seu final
+
+    ;Lendo o valor de X
+    mov di, X           ;di aponta para o começo do endereço onde está X
+    call gets           ;gets salva no endereço apontado por di cada caractere lido do teclado até o enter
+    call endl
+
+    mov si, X
+
+    mov di, palavra2
+    call strcmp
+    je .sucesso
+    mov si, falha
+    call prints
+    call endl
+
+    mov si, X
+    mov di, palavra2
+    call charcmp
+    mov si, acertos
+    call prints
+
+    mov si, letras_certas
+    call prints
+    call endl
+    call endl
+
+    jmp .p2
+
+    jmp done
+
+ .p3:
+    ;Imprimindo na tela a mensagem declarada em data
+    mov si, mensagem    ;si aponta para o começo do endereço onde está mensagem
+    call prints         ;Como só é impresso um caractere por vez, pegamos uma string com N caracteres e printamos um por um em ordem até chegar ao caractere de valor 0 que é o fim da string, assim prints pega a string para qual o ponteiro si aponta e a imprime na tela até o seu final
+
+    ;Lendo o valor de X
+    mov di, X           ;di aponta para o começo do endereço onde está X
+    call gets           ;gets salva no endereço apontado por di cada caractere lido do teclado até o enter
+    call endl
+
+    mov si, X
+
+    mov di, palavra3
+    call strcmp
+    je .sucesso
+    mov si, falha
+    call prints
+    call endl
+
+    mov si, X
+    mov di, palavra3
+    call charcmp
+    mov si, acertos
+    call prints
+
+    mov si, letras_certas
+    call prints
+    call endl
+    call endl
+
+    jmp .p3
+
+    jmp done
+     
+ .p4:
+    ;Imprimindo na tela a mensagem declarada em data
+    mov si, mensagem    ;si aponta para o começo do endereço onde está mensagem
+    call prints         ;Como só é impresso um caractere por vez, pegamos uma string com N caracteres e printamos um por um em ordem até chegar ao caractere de valor 0 que é o fim da string, assim prints pega a string para qual o ponteiro si aponta e a imprime na tela até o seu final
+
+    ;Lendo o valor de X
+    mov di, X           ;di aponta para o começo do endereço onde está X
+    call gets           ;gets salva no endereço apontado por di cada caractere lido do teclado até o enter
+    call endl
+
+    mov si, X
+
+    mov di, palavra4
+    call strcmp
+    je .sucesso
+    mov si, falha
+    call prints
+    call endl
+
+    mov si, X
+    mov di, palavra4
+    call charcmp
+    mov si, acertos
+    call prints
+
+    mov si, letras_certas
+    call prints
+    call endl
+    call endl
+
+    jmp .p4
+
+    jmp done
+     
+ .p5:
+    ;Imprimindo na tela a mensagem declarada em data
+    mov si, mensagem    ;si aponta para o começo do endereço onde está mensagem
+    call prints         ;Como só é impresso um caractere por vez, pegamos uma string com N caracteres e printamos um por um em ordem até chegar ao caractere de valor 0 que é o fim da string, assim prints pega a string para qual o ponteiro si aponta e a imprime na tela até o seu final
+
+    ;Lendo o valor de X
+    mov di, X           ;di aponta para o começo do endereço onde está X
+    call gets           ;gets salva no endereço apontado por di cada caractere lido do teclado até o enter
+    call endl
+
+    mov si, X
+
+    mov di, palavra5
+    call strcmp
+    je .sucesso
+    mov si, falha
+    call prints
+    call endl
+
+    mov si, X
+    mov di, palavra5
+    call charcmp
+    mov si, acertos
+    call prints
+
+    mov si, letras_certas
+    call prints
+    call endl
+    call endl
+
+    jmp .p5
 
     .sucesso:
-        mov si, sucesso
-        call prints
-        call endl
+      mov si, sucesso
+      call prints
+      call endl
+      jmp done
 
 done:
     jmp $
