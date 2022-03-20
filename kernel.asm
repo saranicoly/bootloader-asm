@@ -94,21 +94,27 @@ strcmp:              ; mov si, string1, mov di, string2
     ret
 
 charcmp:
+  xor bx, bx
+  mov bx, 0
   .loop:
     lodsb
     cmp al, 0 ; se a palavra acabou
     je .acabou
     cmp al, byte[di]
     je .equal
+
+    mov al, '_'
+    mov byte[letras_certas+bx], al
+
+    .equal:
+      mov byte[letras_certas+bx], al
     inc di
-    jmp .loop
-  .equal:
-    mov byte[letras_certas], al
-    ;inc byte[letras_certas]
+    inc bx
     jmp .loop
   .acabou:
     stc
 ret
+
 
 start:
     xor ax, ax    ;limpando ax
