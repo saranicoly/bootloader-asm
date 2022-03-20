@@ -4,9 +4,12 @@ jmp 0x0000:start
 data:
   mensagem db 'Digite uma palavra de 6 letras: ', 0
   palavra db 'batata', 0
-  sucesso db 'Parabens!! Voce conseguiu', 0
+  letras_certas db '______', 0
+  sucesso db 'Parabens!! Voce conseguiu :)', 0
   falha db 'Ops, nao foi dessa vez :/', 0
-  X times 10 db 0
+  acertos db 'Letras certas: ', 0
+  debbug db 'deu ruim fi', 0
+  X times 8 db 0
 
 putchar:
   mov ah, 0x0e
@@ -90,6 +93,29 @@ strcmp:              ; mov si, string1, mov di, string2
     stc
     ret
 
+charcmp:
+  xor bx, bx
+  mov bx, 0
+  .loop:
+    lodsb
+    cmp al, 0 ; se a palavra acabou
+    je .acabou
+    cmp al, byte[di]
+    je .equal
+
+    mov al, '_'
+    mov byte[letras_certas+bx], al
+
+    .equal:
+      mov byte[letras_certas+bx], al
+    inc di
+    inc bx
+    jmp .loop
+  .acabou:
+    stc
+ret
+
+
 start:
     xor ax, ax    ;limpando ax
     mov ds, ax    ;limpando ds
@@ -112,7 +138,18 @@ start:
     mov si, falha
     call prints
     call endl
+
+    mov si, X
+    mov di, palavra
+    call charcmp
+    mov si, acertos
+    call prints
+
+    mov si, letras_certas
+    call prints
     call endl
+    call endl
+
     jmp .leitura
 
     .sucesso:
